@@ -1,0 +1,1 @@
+It's use for full text search. At  a time search multiple culumns.
