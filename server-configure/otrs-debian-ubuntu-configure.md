@@ -1,4 +1,4 @@
-# How to install OTRS (OpenSource Trouble Ticket System) on Debian 11.
+# How to install OTRS (OpenSource Trouble Ticket System) on Debian 11 & Ubuntu 22.04 LTS.
 OTRS is an open-source Ticket Request System that helps organizations process customer tickets and requests. It is one of the most popular service management software used for helpdesk and customer support. It offers a flexible web-based panel to track general IT-related issues from the central point. It is written in Perl and uses PostgreSQL, and MySQL as a database backend. If you are looking for helpdesks, call centers, and IT service management systems then OTRS is the best option for you.
 
 This post will explain how to install OTRS on Debian 11 server.
@@ -39,9 +39,17 @@ Output
 ```
 
 Next, install all required Perl modules on your server by running the following command:
+
+It's for Debian.
 ```
 sudo apt install perl libapache2-mod-perl2 libdbd-mysql-perl libtimedate-perl libnet-dns-perl libnet-ldap-perl libio-socket-ssl-perl libpdf-api2-perl libdbd-mysql-perl libsoap-lite-perl libtext-csv-xs-perl libjson-xs-perl libapache-dbi-perl libxml-libxml-perl libxml-libxslt-perl libyaml-perl libarchive-zip-perl libcrypt-eksblowfish-perl libencode-hanextra-perl libmail-imapclient-perl libtemplate-perl libmoo-perl libauthen-ntlm-perl libjavascript-minifier-xs-perl libdbd-odbc-perl libcss-minifier-xs-perl libdbd-pg-perl libdatetime-perl -y
 ```
+
+It's For Ubuntu
+```
+sudo apt install perl libapache2-mod-perl2 libdbd-mysql-perl libtimedate-perl libnet-dns-perl libnet-ldap-perl libio-socket-ssl-perl libpdf-api2-perl libdbd-mysql-perl libsoap-lite-perl libtext-csv-xs-perl libjson-xs-perl libapache-dbi-perl libxml-libxml-perl libxml-libxslt-perl libyaml-perl libarchive-zip-perl libcrypt-eksblowfish-perl libencode-hanextra-perl libmail-imapclient-perl libtemplate-perl libmoo-perl libauthen-ntlm-perl libjavascript-minifier-xs-perl libdbd-odbc-perl  libcss-minifier-xs-perl libdbd-pg-perl libdatetime-perl apache2 mariadb-server mariadb-client -y
+```
+
 After installing all the required dependencies, you can proceed to the next step.
 
 Optional
@@ -88,7 +96,7 @@ Restart your web server to apply new configurations:
 ```
 sudo systemctl restart apache2
 ```
-#### MySql Configure
+### Step 3: MySql Configure
 It's MYSQL 5.7 for OTRS `6.0.35`
 ```
 sudo apt update
@@ -177,13 +185,70 @@ FLUSH PRIVILEGES;
 exit
 systemctl status mysql.service
 ```
-## Step 3 — Using the Web Installer
+
+####  Step 3: MariaDB Configure
+At this point, you need to run the MySQL security script:
+```
+sudo mysql_secure_installation
+```
+Set a password for your MariaDB and answer the question by entering the y.
+```
+ Enter current password for root (enter for none):
+    Set root password? [Y/n]: Y
+    Enter Password:
+    Remove anonymous users? [Y/n]: Y
+    Disallow root login remotely? [Y/n]: Y
+    Remove test database and access to it? [Y/n]:  Y
+    Reload privilege tables now? [Y/n]:  Y
+```
+Then, log in to your MariaDB shell with the following command
+```
+sudo mysql -u root -p
+```
+Now use the following command to create the OTRS database.
+```
+MariaDB [(none)]> create database otrsdb character set utf8 collate utf8_general_ci;
+```
+Next, use the following command to create the database user and grant all the privileges to it:
+```
+MariaDB [(none)]> grant all on otrsdb.* to otrsuser@localhost identified by 'password';
+```
+Flush the privileges and exit from the MariaDB shell:
+```
+MariaDB [(none)]> flush privileges;
+MariaDB [(none)]> exit;
+```
+At this point, edit the MariaDB configuration file and tweak some settings:
+```
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
+```
+Update the following lines inside the [mysqld] section as shown below:
+```
+max_allowed_packet   = 64M
+query_cache_size     = 32M
+innodb_log_file_size = 256M
+```
+When you are done, save and close the file.
+```
+sudo systemctl restart mariadb
+```
+Check Apache configuration for any error:
+```
+sudo apachectl -t
+```
+```
+Output
+Syntax OK
+```
+
+## Step 4 — Using the Web Installer
 In this step, you will configure OTRS’s database settings in a web browser and start the OTRS daemon process on the command line.
 
 Open` https://example.com/otrs/installer.pl `in your favorite web browser, replacing `example.com` with your domain name. You will find a welcome screen with the message Welcome to OTRS 6 and information about the OTRS offices.
 
 
-## Optional If Need Migration
+## Step 5 - Optional
+### If Need Migration
 Some common error solution show here:-
 - `Error 2020: Got packet bigger than 'max_allowed_packet' bytes when dumping table `article_data_mime_attachment` at row: 16048`
 
@@ -193,3 +258,32 @@ mysqldump -u root -p --max-allowed-packet=512M otrs > otrs_backup.sql
 
 sudo systemctl restart mysql
 ```
+
+
+
+
+## Database Configuretion
+```
+create database otrs character set utf8 collate utf8_general_ci;
+grant all on otrs.* to otrs@localhost identified by 'Start@123';
+```
+
+## Re-install OTRS
+Modify this file `sudo nano /opt/otrs/Kernel/Config.pm` to  `$Self->{SecureMode} = 0`;
+- `0` Mode Secure disable;
+
+## Cache Clear
+```
+cd /path/to/otrs/var/tmp
+rm -rf *
+
+```
+## Final Credential like:
+Start page:
+http://10.0.2.13/otrs/index.pl
+User:
+root@localhost
+Password:
+9ycO1uH1dwDochHj
+
+# 🙌🙌 It's Done Here... Thanks 🙌🙌
