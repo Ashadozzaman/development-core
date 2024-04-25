@@ -62,6 +62,11 @@ EXIT;
 DB_ADAPTER=mysql
 DB_URI=mysql://konga_user:password@localhost:3306/konga
 ```
+
+```
+DB_ADAPTER=postgres
+DB_URI=postgresql://kong:Start@123@localhost:5432/konga
+```
 Replace `password` with the password you set for the MySQL user `konga_user`.
 
 ### Install Dependencies:
