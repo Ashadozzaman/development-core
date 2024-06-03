@@ -22,6 +22,13 @@ sudo wget https://otrscommunityedition.com/download/otrs-community-edition-6.0.3
 tar xzf otrs-community-edition-6.0.35.tar.gz
 sudo mv otrs-community-edition-6.0.35 /opt/otrs
 ```
+
+
+```
+sudo wget https://otrscommunityedition.com/download/otrs-community-edition-6.0.40.tar.gz
+tar xzf otrs-community-edition-6.0.40.tar.gz
+sudo mv otrs-community-edition-6.0.40 /opt/otrs
+```
 Because OTRS is written in Perl, it uses a number of Perl modules. Check for missing modules by using the CheckModules.pl script included with OTRS:
 ```
 sudo /opt/otrs/bin/otrs.CheckModules.pl
@@ -165,6 +172,8 @@ sudo systemctl restart mysql.service
 
 Now Create Mysql User and Crendtial
 ```
+sudo apt install mariadb-server
+
 
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Start@123';
 // INSTALL PLUGIN auth_socket SONAME 'auth_socket.so';
@@ -205,13 +214,34 @@ Then, log in to your MariaDB shell with the following command
 ```
 sudo mysql -u root -p
 ```
+
+```
+-- Create the otrs user and set the password
+sudo apt install mariadb-server
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Start@123';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password;
+
+CREATE USER 'otrs'@'localhost' IDENTIFIED BY 'Start@123';
+ALTER USER 'otrs'@'localhost' IDENTIFIED BY 'Start@123';
+
+
+-- Grant all privileges to the otrs user
+GRANT ALL PRIVILEGES ON *.* TO 'otrs'@'localhost';
+
+-- Apply changes
+FLUSH PRIVILEGES;
+
+-- Verify the user creation
+SELECT User, Host FROM mysql.user;
+```
 Now use the following command to create the OTRS database.
 ```
 MariaDB [(none)]> create database otrsdb character set utf8 collate utf8_general_ci;
 ```
 Next, use the following command to create the database user and grant all the privileges to it:
 ```
-MariaDB [(none)]> grant all on otrsdb.* to otrsuser@localhost identified by 'password';
+MariaDB [(none)]> grant all on otrsdb.* to otrs@localhost identified by 'Start@123';
 ```
 Flush the privileges and exit from the MariaDB shell:
 ```
@@ -274,16 +304,47 @@ Modify this file `sudo nano /opt/otrs/Kernel/Config.pm` to  `$Self->{SecureMode}
 
 ## Cache Clear
 ```
-cd /path/to/otrs/var/tmp
+cd /opt/otrs/var/tmp
 rm -rf *
 
 ```
 ## Final Credential like:
 Start page:
-http://10.0.2.13/otrs/index.pl
+http://10.0.2.13/otrs/installer.pl
 User:
 root@localhost
 Password:
 9ycO1uH1dwDochHj
 
 # 🙌🙌 It's Done Here... Thanks 🙌🙌
+
+### Fixed Mysql Issue `my.cnf`
+```
+[mysqld]
+max_allowed_packet      = 64M
+thread_stack            = 192K
+thread_cache_size       = 8
+myisam-recover-options  = BACKUP
+#query_cache_limit       = 1M
+#query_cache_size        = 32M
+innodb_log_file_size    = 256M
+collation-server        = utf8_unicode_ci
+init-connect            = 'SET NAMES utf8'
+character-set-server    = utf8
+
+
+```
+
+Daemon Start
+```
+su -c "/opt/otrs/bin/otrs.Daemon.pl start" -s /bin/bash otrs
+sudo -u otrs /opt/otrs/bin/otrs.Daemon.pl start
+```
+
+Daemon Stop
+```
+su -c "./bin/otrs.Daemon.pl stop" -s /bin/bash otrs
+
+```
+
+###  Outgoing Mail Configure [Here](https://www.cloudbooklet.com/developer/how-to-install-and-setup-sendmail-on-debian-10)
