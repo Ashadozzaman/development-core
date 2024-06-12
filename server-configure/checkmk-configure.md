@@ -31,12 +31,6 @@ sudo apt install ./check-mk-raw-2.2.0p25_0.bookworm_amd64.deb
 ```
 
 
-
-
-
-
-
-
 ```
 gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E5267A6C
 ```

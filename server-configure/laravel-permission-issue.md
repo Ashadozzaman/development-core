@@ -33,4 +33,4 @@ To fix this issue, follow these steps:
 
    Ensure that the Laravel logging configuration (`config/logging.php`) is set up correctly. The default configuration should work fine, but if you've customized it, double-check for any potential issues.
 
-After completing these steps, your Laravel application should be able to write to the log file without encountering the "Permission denied" error. If you continue to face issues, make sure there are no additional security modules or configurations (like SELinux or AppArmor) that might be affecting file permissions.
+After completing these steps, your Laravel application should be able to write to the log file without encountering the "Permission denied" error. If you continue to face issues, make sure there are no additional security modules or configurations (like SELinux or AppArmor) that might be affecting file permissions. 
