@@ -43,3 +43,4 @@ To install the Redis PHP extension for PHP 8.2, you can follow these steps:
    Then, access this file from your browser (`http://your_server_ip/info.php`) and search for "redis" to see if the extension is listed and enabled.
 
 Once you have completed these steps, the Redis PHP extension should be installed and ready to use with PHP 8.2. You can now proceed with your application, and the `Redis` class should be available for use.
+

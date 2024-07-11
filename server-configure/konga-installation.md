@@ -102,12 +102,18 @@ For example for:
 
 ```
 $ node ./bin/konga.js  prepare --adapter postgres --uri postgresql://localhost:5432/konga
+
+node ./bin/konga.js prepare --adapter mysql --uri mysql://konga_user:Start@123@localhost:3306/konga
 ```
 The process will exit after all migrations are completed.
 ##### Finally:
 
 ```
 npm run production
+```
+Run in background
+```
+nohup npm run production &
 ```
 
 Konga GUI will be available at http://localhost:1337
