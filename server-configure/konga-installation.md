@@ -115,6 +115,9 @@ Run in background
 ```
 nohup npm run production &
 ```
+```
+nohup bash -c 'PORT=3001 npm start' > output.log 2>&1 &
+```
 
 Konga GUI will be available at http://localhost:1337
 

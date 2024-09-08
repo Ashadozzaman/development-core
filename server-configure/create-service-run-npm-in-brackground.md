@@ -5,7 +5,7 @@ To run an `npm run production` command in the background by creating a service, 
    Create a new service file in the `/etc/systemd/system` directory. You will need superuser privileges to do this. For example, you can create a file named `npm-production.service`:
 
    ```bash
-   sudo nano /etc/systemd/system/npm-production.service
+   sudo nano /etc/systemd/system/npm-service.service
    ```
 
 2. **Edit the service file**:
@@ -18,7 +18,7 @@ To run an `npm run production` command in the background by creating a service, 
         After=network.target
 
         [Service]
-        ExecStart=/root/.nvm/versions/node/v12.22.12/bin/npm run production
+        ExecStart=/root/.nvm/versions/node/v20.14.0/bin/npm run production
         WorkingDirectory=/root/konga
         StandardOutput=journal
         StandardError=journal
@@ -26,7 +26,8 @@ To run an `npm run production` command in the background by creating a service, 
         User=user-name
         Restart=always
         Environment=NODE_ENV=production
-        Environment=PATH=/root/.nvm/versions/node/v12.22.12/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        Environment=PORT=3000 // Change Port if need
+        Environment=PATH=/root/.nvm/versions/node/v20.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
         [Install]
         WantedBy=multi-user.target
@@ -38,7 +39,7 @@ To run an `npm run production` command in the background by creating a service, 
    which npm
    ```
 
-   - `ExecStart`: ExecStart=/root/.nvm/versions/node/v12.22.12/bin/npm run production: This specifies the command that starts the service. It uses the npm executable located in the specified path to run the production script.
+   - `ExecStart`: ExecStart=/root/.nvm/versions/node/v20.14.0/bin/npm run production: This specifies the command that starts the service. It uses the npm executable located in the specified path to run the production script.
    - `WorkingDirectory`: Path to your project directory.
    - `User`: The user under which the service should run. Replace `your-username` with the appropriate username.
    - `Restart`: Configures the service to restart automatically if it crashes.

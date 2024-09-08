@@ -7,6 +7,9 @@ To fix this issue, follow these steps:
    ```bash
    sudo chown -R www-data:www-data /var/www/html/application.com.test/storage /var/www/html/application.com.test/bootstrap/cache
    sudo chmod -R 775 /var/www/html/application.com.test/storage /var/www/html/application.com.test/bootstrap/cache
+
+   sudo chown -R www-data:www-data storage bootstrap/cache
+   sudo chmod -R 775 storage bootstrap/cache
    ```
 
    These commands change the ownership of the directories to the `www-data` user and group, and set the permissions to allow reading, writing, and executing by the owner and the group.
@@ -17,6 +20,7 @@ To fix this issue, follow these steps:
    
    ```bash
    ls -la /var/www/html/application.com.test/storage/logs
+   ls -la storage/logs
    ```
 
    The output should show `www-data www-data` as the owner and group for the `laravel.log` file, with `rwxrwxr-x` permissions for the directories.
