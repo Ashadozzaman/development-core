@@ -123,4 +123,4 @@ sudo systemctl enable supervisor
 
 ---
 
-This setup will ensure your Laravel queue workers run as a background service managed by Supervisor. Let me know if you encounter any issues!
+This setup will ensure your Laravel queue workers run as a background service managed by Supervisor.
